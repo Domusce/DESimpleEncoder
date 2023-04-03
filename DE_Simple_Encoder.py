@@ -25,6 +25,40 @@ class DESimplE_GRUEcoder(nn.Module):
         
         self.encoder = nn.GRU(self.emb_dim+self.temporal_emb_dim, self.hidden_size, batch_first=True)
 
+        self.embed.weight.data.copy_(torch.from_numpy(self.embed_matrix))
+        self.tokenization_memo={}
+
+    
+    def init_embedding(self, pretrained_vocab, pretrained_emb):
+        self.word_embed={}
+        if pretrained_vocab is None or pretrained_emb is None:
+            with open(Glove_path, encoding='utf-8') as glove:
+                for line in glove:
+                    word, vec = line.split(' ', 1)
+                    if word in self.word2id:
+                        self.word_embed[self.word2id[word]] = np.fromstring(vec,sep=' ')
+        
+        else:
+            for word, w_id in pretrained_vocab:
+                if word in self.word2id:
+                    self.word_embed[self.word2id[word]] = pretrained_emb[w_id]
 
 
+        # initialize unknown word according to normal distribution
+        uninitialized = [word for word in self.word2id.values() if not word in self.word_embed]
+        for word in uninitialized:
+            self.word_embed[word] = np.random.normal(size=300)
+        
+        self.embed_matix = np.zeros((len(self.word_embed),300))
+        for word in self.word_embed:
+            self.embed_matix[word] = self.word_embed[word]
 
+    
+    def forward(self, batch, doc_len):
+        size, sort = torch.sort(doc_len, dim=0, descending=True)
+        _, unsort = torch.sort(sort, dim=0)
+        batch = torch.index_select(batch, dim=0, index=sort)
+        embedded = self.embed(batch)
+        packed = pack(embedded, size.data.tolist(), batch_first=True)
+        encoded, h = self.encoder(packed)
+        return torch.index_select(h, dim=1, index=unsort)[0]

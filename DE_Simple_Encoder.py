@@ -62,3 +62,35 @@ class DESimplE_GRUEcoder(nn.Module):
         packed = pack(embedded, size.data.tolist(), batch_first=True)
         encoded, h = self.encoder(packed)
         return torch.index_select(h, dim=1, index=unsort)[0]
+
+    def prebatch(self, texts):
+        """
+        Gets a list of untokenized texts,
+        :param texts:
+        :return: a padded batch that can be used  as input to forward,
+        puts it on the same device as the GRU
+        """
+        batch_size = len(texts)
+        tokenized_texts = []
+        for text in texts:
+            if text in self.tokenization_memo:
+                tokenized_texts.append(self.tokenization_memo[text])
+            else:
+                tokenized = [self.word2id[token.text.lower()]\
+                             for token in self.tokenizer(text,
+                                                         disable=['parser','tagger','ner'])\
+                             if token.text.lower() in self.word2id]
+                self.tokenization_memo[text] = tokenized
+                tokenized_texts.append(tokenized)
+
+        padded_length = max(len(text) for text in tokenized_texts)
+        phrase_batch = np.zeros((batch_size, padded_length),dtype=int)
+
+        for i, tokens in enumerate(tokenized_texts):
+            phrase_batch[i,0:len(tokens)] = np.arrays(tokens)
+
+        device = self.encoder.weight_ih_10.device
+        phrase_batch = torch.from_numpy(phrase_batch).to(device)
+        phrase_len = torch.LongTensor([len(text) for text in tokenized_texts]).to(device)
+        return  phrase_batch, phrase_len
+

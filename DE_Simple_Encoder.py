@@ -7,20 +7,22 @@ import spacy
 Glove_path = "glove/glove.6B.300d.txt"
 
 class DESimplE_GRUEcoder(nn.Module):
-    def __init__(self, word2id, tokenizer,se_prop=0, hidden_size=100, pretrained_vocab=None, pretrained_emb=None):
+    def __init__(self, word2id, tokenizer,se_prop=0, E_or_R = 0 ,hidden_size=100, pretrained_vocab=None, pretrained_emb=None):
         super(DESimplE_GRUEcoder, self).__init__()
 
         self.word2id = word2id
         self.tokenizer = tokenizer
         self.se_prop = se_prop
+        self.E_or_R = E_or_R
         self.init_embeddings(pretrained_vocab,pretrained_emb)
         self.hidden_size = hidden_size
         
-        self.numEmb = self.embed_matrix.shape[0]
+        self.numEnt = self.embed_matrix.shape[0]
         self.emb_dim = self.embed_matrix.shape[1]
-        self.temporal_emb_dim = self.embed_matrix.shape[1] - int(self.se_prop*self.embed_matrix.shape[1])
-        self.embed = nn.Embedding(num_embeddings=self.numEmb,
-                                  embedding_dim=self.emb_dim + self.temporal_emb_dim,
+        self.s_emb_dim = int(self.se_prop*self.emb_dim)
+        self.t_emb_dim = self.emb_dim - self.s_emb_dim
+        self.embed = nn.Embedding(num_embeddings=self.numEnt,
+                                  embedding_dim=self.s_emb_dim + self.E_or_R*self.t_emb_dim,
                                   padding_idx=0)
         
         self.encoder = nn.GRU(self.emb_dim+self.temporal_emb_dim, self.hidden_size, batch_first=True)
@@ -94,3 +96,8 @@ class DESimplE_GRUEcoder(nn.Module):
         phrase_len = torch.LongTensor([len(text) for text in tokenized_texts]).to(device)
         return  phrase_batch, phrase_len
 
+    def data_numEnt(self):
+        return self.numEnt
+
+    def data_dimenson(self):
+        return self.s_emb_dim, self.t_emb_dim

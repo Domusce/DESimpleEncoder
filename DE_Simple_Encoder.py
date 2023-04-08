@@ -65,7 +65,7 @@ class DESimplE_GRUEcoder(nn.Module):
         encoded, h = self.encoder(packed)
         return torch.index_select(h, dim=1, index=unsort)[0]
 
-    def prebatch(self, texts):
+    def prepare_batch(self, texts):
         """
         Gets a list of untokenized texts,
         :param texts:
@@ -96,8 +96,8 @@ class DESimplE_GRUEcoder(nn.Module):
         phrase_len = torch.LongTensor([len(text) for text in tokenized_texts]).to(device)
         return  phrase_batch, phrase_len
 
-    def data_numEnt(self):
+    def get_Data_numEnt(self):
         return self.numEnt
 
-    def data_dimenson(self):
+    def get_Data_Dimenson(self):
         return self.s_emb_dim, self.t_emb_dim

@@ -23,4 +23,60 @@ class DE_SimplE(nn.Module):
 
         self.time_nl = torch.sin
 
-        nn.init.xavier_uniform
+        # nn.init.xavier_uniform(self.ent_encoder.weight)
+
+    
+    def create_time_embedds(self):
+        
+        # frequency embeddings for the entities
+        self.m_freq_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.m_freq_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        
+        self.d_freq_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.d_freq_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+
+        self.y_freq_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.y_freq_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+
+        # phi embeddings for the entities 
+        self.m_phi_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.m_phi_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        
+        self.d_phi_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.d_phi_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+
+        self.y_phi_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.y_phi_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+
+        # amps embeddings for the entities
+        self.m_amps_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.m_amps_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        
+        self.d_amps_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.d_amps_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+
+        self.y_amps_h = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+        self.y_amps_t = nn.Embedding(self.numEnt, self.t_emb_dim).cuda()
+
+
+        nn.init.xavier_uniform_(self.m_freq_h.weight)
+        nn.init.xavier_uniform_(self.d_freq_h.weight)
+        nn.init.xavier_uniform_(self.y_freq_h.weight)
+        nn.init.xavier_uniform_(self.m_freq_t.weight)
+        nn.init.xavier_uniform_(self.d_freq_t.weight)
+        nn.init.xavier_uniform_(self.y_freq_t.weight)
+
+        nn.init.xavier_uniform_(self.m_phi_h.weight)
+        nn.init.xavier_uniform_(self.d_phi_h.weight)
+        nn.init.xavier_uniform_(self.y_phi_h.weight)
+        nn.init.xavier_uniform_(self.m_phi_t.weight)
+        nn.init.xavier_uniform_(self.d_phi_t.weight)
+        nn.init.xavier_uniform_(self.y_phi_t.weight)
+
+        nn.init.xavier_uniform_(self.m_amps_h.weight)
+        nn.init.xavier_uniform_(self.d_amps_h.weight)
+        nn.init.xavier_uniform_(self.y_amps_h.weight)
+        nn.init.xavier_uniform_(self.m_amps_t.weight)
+        nn.init.xavier_uniform_(self.d_amps_t.weight)
+        nn.init.xavier_uniform_(self.y_amps_t.weight)
+

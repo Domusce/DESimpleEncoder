@@ -66,7 +66,7 @@ class DESimplE_GRUEcoder(nn.Module):
         return torch.index_select(h, dim=1, index=unsort)[0]
 
     def prepare_batch(self, texts):
-        """
+        """texts
         Gets a list of untokenized texts,
         :param texts:
         :return: a padded batch that can be used  as input to forward,

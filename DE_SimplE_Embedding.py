@@ -23,4 +23,5 @@ class DE_SimplE(nn.Module):
 
         self.time_nl = torch.sin
 
-        nn.init.xavier_uniform
+        nn.init.xavier_uniform()
+

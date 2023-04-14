@@ -25,7 +25,7 @@ class DESimplE_GRUEcoder(nn.Module):
                                   embedding_dim=self.s_emb_dim + self.E_or_R*self.t_emb_dim,
                                   padding_idx=0)
         
-        self.encoder = nn.GRU(self.emb_dim+self.temporal_emb_dim, self.hidden_size, batch_first=True)
+        self.encoder = nn.GRU(self.emb_dim+ self.E_or_R*self.t_emb_dim, self.hidden_size, batch_first=True)
 
         self.embed.weight.data.copy_(torch.from_numpy(self.embed_matrix))
         self.tokenization_memo={}

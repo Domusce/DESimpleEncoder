@@ -80,7 +80,7 @@ class DE_SimplE(nn.Module):
         nn.init.xavier_uniform_(self.d_amps_t.weight)
         nn.init.xavier_uniform_(self.y_amps_t.weight)
 
-    def get_time_embeddings(self, entities, days, months, years, h_or_t):
+    def get_time_embedd(self, entities, days, months, years, h_or_t):
         if h_or_t == 'head':
             emb = self.y_amps_h(entities)*self.time_nl(self.y_freq_h(entities)*years + self.y_phi_h(entities))
             emb += self.m_amps_h(entities)*self.time_nl(self.m_freq_h(entities)*months + self.m_phi_h(entities))

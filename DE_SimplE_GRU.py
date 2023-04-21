@@ -161,3 +161,5 @@ class DE_SimplE_GRU(nn.Module):
         scores = F.dropout(scores, p=self.params.dropout, training=self.training)
         scores = torch.sum(scores, dim=1)
         return scores
+
+        
